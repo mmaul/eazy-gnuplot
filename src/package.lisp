@@ -25,11 +25,29 @@
 ;; gnuplot interface
 
 (defvar *gnuplot-home* "gnuplot")
-  (defvar *user-stream*)
-  (defvar *plot-stream*)
-  (defvar *data-stream*)
-  (defvar *plot-type*)
-  (defvar *plot-type-multiplot*)
+(defvar *user-stream*)
+(defvar *plot-stream*)
+(defvar *data-stream*)
+(defvar *plot-type*)
+(defvar *plot-type-multiplot*)
+
+(defvar *list-formatting-rules* nil)
+
+(defun colon-separated-list (list)
+  (format nil "~{~a~^:~}" list))
+(defun comma-separated-list (list)
+  (format nil "~{~a~^,~}" list))
+(defun range-list (list)
+  (format nil "[~{~a~^:~}]" list))
+
+(setf (getf *list-formatting-rules* :using) #'colon-separated-list)
+(setf (getf *list-formatting-rules* :size)  #'comma-separated-list)
+(setf (getf *list-formatting-rules* :xrange) #'range-list)
+(setf (getf *list-formatting-rules* :yrange) #'range-list)
+(setf (getf *list-formatting-rules* :zrange) #'range-list)
+(setf (getf *list-formatting-rules* :x2range) #'range-list)
+(setf (getf *list-formatting-rules* :y2range) #'range-list)
+(setf (getf *list-formatting-rules* :z2range) #'range-list)
 
 (defun gp-quote (value)
   (match value
@@ -93,6 +111,7 @@ parameter style..
                (lambda (key val)
                  (format *user-stream* "~&set ~a ~a"
                          key (gp-quote val))))))
+
 (defun gp-unset (&rest args)
   "unsets gnuplot parameters based upon contents of function arguments
 parameter style..
